@@ -50,6 +50,8 @@ jobs:
       with:
         node-version: '20' # Use Node.js 20.x for Angular
         cache: 'npm' # Cache npm dependencies
+        # FIX: Specify the path to the package-lock.json for caching
+        cache-dependency-path: microservice-source-code/release2/k8s-fleetman-webapp-angular/package-lock.json
 
     - name: Build Angular Webapp
       run: |
