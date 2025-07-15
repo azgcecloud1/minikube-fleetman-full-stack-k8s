@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-api-gateway-service
+  namespace: minikube-tomcat
+spec:
+  selector:
+    app: api-gateway
+  ports:
+    - protocol: TCP
+      port: 8080 # Service port
+      targetPort: 8080 # Container port
+      nodePort: 30081 # Explicit NodePort for external access (choose an available port)
+  type: NodePort # Expose for external access

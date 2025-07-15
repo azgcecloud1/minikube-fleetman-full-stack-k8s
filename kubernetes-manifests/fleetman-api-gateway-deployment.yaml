@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-api-gateway-deployment
+  namespace: minikube-tomcat
+  labels:
+    app: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: fleetman/api-gateway:latest
+        imagePullPolicy: Never # Crucial for Minikube
+        ports:
+        - containerPort: 8080 # Default Spring Boot port
+        env:
+        - name: POSITION_TRACKER_HOSTNAME
+          value: "fleetman-position-tracker-service" # Kubernetes Service name for Position Tracker
+        - name: POSITION_TRACKER_PORT
+          value: "8080"

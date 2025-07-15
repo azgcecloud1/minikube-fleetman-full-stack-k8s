@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-position-tracker-deployment
+  namespace: minikube-tomcat # Deploy in our dedicated namespace
+  labels:
+    app: position-tracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: position-tracker
+  template:
+    metadata:
+      labels:
+        app: position-tracker
+    spec:
+      containers:
+      - name: position-tracker
+        image: fleetman/position-tracker:latest # Our custom built image
+        imagePullPolicy: Never # Crucial for Minikube - tells Kubernetes not to try pulling from a remote registry
+        ports:
+        - containerPort: 8080 # Default Spring Boot port
+        env:
+        - name: MYSQL_HOSTNAME
+          value: "mysql-service" # This is the Kubernetes Service name for MySQL
+        - name: MYSQL_PORT
+          value: "3306"
+        - name: MYSQL_DATABASE
+          value: "myappdb"
+        - name: MYSQL_USER
+          value: "appuser"
+        - name: MYSQL_PASSWORD
+          value: "your_app_password" # <<< THIS MUST MATCH YOUR MYSQL DEPLOYMENT
+        - name: RABBITMQ_HOSTNAME
+          value: "rabbitmq-service" # Kubernetes Service name for RabbitMQ
+        - name: RABBITMQ_PORT
+          value: "5672"

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-webapp-angular-deployment
+  namespace: minikube-tomcat
+  labels:
+    app: webapp-angular
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp-angular
+  template:
+    metadata:
+      labels:
+        app: webapp-angular
+    spec:
+      containers:
+      - name: webapp-angular
+        image: fleetman/webapp-angular:latest
+        imagePullPolicy: Never # Crucial for Minikube
+        ports:
+        - containerPort: 80 # Nginx default HTTP port
+        volumeMounts: # NEW: Mount the config map
+        - name: nginx-config-volume
+          mountPath: /etc/nginx/nginx.conf # Mount as the main Nginx config file
+          subPath: nginx.conf # Specify the file within the ConfigMap
+      volumes: # NEW: Define the volume
+      - name: nginx-config-volume
+        configMap:
+          name: nginx-config # Name of the ConfigMap created earlier
+          items:
+          - key: nginx.conf # Key in the ConfigMap
+            path: nginx.conf # Path within the mounted volume

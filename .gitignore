@@ -1,0 +1,27 @@
+# General ignores for build artifacts and temporary files
+**/target/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.angular/
+docker_build_log.txt
+nginx copy.conf
+.vscode/
+
+# Specific ignores for top-level directories/files not part of the current project
+/_course_files/
+/dashboard.yaml
+/README
+
+# Ignore all 'release' directories within microservice-source-code/ by default
+/microservice-source-code/release0/
+/microservice-source-code/release0-5/
+/microservice-source-code/release1/
+/microservice-source-code/release3/
+
+# Explicitly ignore the 'angular19' version if it's not the main one you want
+/microservice-source-code/release2/k8s-fleetman-webapp-angular19/
+
+# Ensure the main setup record document is included (if in root)
+/tomcat-mysql-k8s-setup-record.md
