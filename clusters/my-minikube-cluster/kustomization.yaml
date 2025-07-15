@@ -1,9 +1,20 @@
-# clusters/my-minikube-cluster/kustomization.yaml
+# clusters/my-minikube-cluster/kubernetes-manifests/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - flux-system/ # Include Flux's own manifests (this is a directory)
-
-bases:
-  - kubernetes-manifests/ # Include your application manifests as a base (this is also a directory)
+  - tomcat-deployment.yaml
+  - tomcat-service.yaml
+  - mysql-pvc.yaml
+  - mysql-deployment.yaml
+  - mysql-service.yaml
+  - rabbitmq-deployment.yaml
+  - rabbitmq-service.yaml
+  - fleetman-position-tracker-deployment.yaml
+  - fleetman-position-tracker-service.yaml
+  - fleetman-position-simulator-deployment.yaml
+  - fleetman-position-simulator-service.yaml
+  - fleetman-api-gateway-deployment.yaml
+  - fleetman-api-gateway-service.yaml
+  - fleetman-webapp-angular-deployment.yaml
+  - fleetman-webapp-angular-service.yaml

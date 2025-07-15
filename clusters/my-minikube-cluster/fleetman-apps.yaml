@@ -1,0 +1,13 @@
+# clusters/my-minikube-cluster/fleetman-apps.yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: fleetman-apps
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./clusters/my-minikube-cluster # Points to this directory directly
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
