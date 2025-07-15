@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m0s
-  path: ./clusters/my-minikube-cluster # Points to this directory directly
+  path: ./clusters/my-minikube-cluster # <--- CRITICAL CHANGE: Points to the directory where all app YAMLs now live
   prune: true
   sourceRef:
     kind: GitRepository
