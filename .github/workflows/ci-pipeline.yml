@@ -1,0 +1,126 @@
+# .github/workflows/ci-pipeline.yml
+
+name: Fleetman CI Pipeline
+
+on:
+  push:
+    branches:
+      - main # This workflow runs on pushes to the 'main' branch
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest # Use a fresh Ubuntu environment for each run
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4 # Action to checkout your repository code
+
+    - name: Set up Java JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin' # Recommended OpenJDK distribution
+        cache: 'maven' # Cache Maven dependencies to speed up builds
+
+    - name: Build Java Microservices with Maven
+      run: |
+        # Navigate to the release2 directory containing the Java microservices
+        cd microservice-source-code/release2
+
+        echo "Building k8s-fleetman-api-gateway..."
+        cd k8s-fleetman-api-gateway
+        mvn clean install -DskipTests # Build without running tests for faster CI
+        cd ..
+
+        echo "Building k8s-fleetman-position-simulator..."
+        cd k8s-fleetman-position-simulator
+        mvn clean install -DskipTests
+        cd ..
+
+        echo "Building k8s-fleetman-position-tracker..."
+        cd k8s-fleetman-position-tracker
+        mvn clean install -DskipTests
+        cd ..
+
+        # Note: k8s-fleetman-queue is an ActiveMQ Dockerfile, not a Java project to be built by Maven.
+        # k8s-fleetman-webapp-angular is built with Node.js/npm separately.
+
+    - name: Set up Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' # Use Node.js 20.x for Angular
+        cache: 'npm' # Cache npm dependencies
+        # FIX: Specify the path to the package-lock.json for caching
+        cache-dependency-path: microservice-source-code/release2/k8s-fleetman-webapp-angular/package-lock.json
+
+    - name: Build Angular Webapp
+      run: |
+        # Navigate to the Angular project directory
+        cd microservice-source-code/release2/k8s-fleetman-webapp-angular
+
+        echo "Installing Angular dependencies..."
+        npm install
+
+        echo "Building Angular application for production..."
+        # Set NODE_OPTIONS for OpenSSL legacy provider compatibility
+        # This is crucial for older Angular CLI versions with newer Node.js
+        export NODE_OPTIONS=--openssl-legacy-provider
+        npx ng build --prod --output-path=dist # Build to 'dist' directory
+
+        echo "Angular build complete."
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3 # Action to set up Docker Buildx for efficient image building
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }} # Use the GitHub secret for Docker Hub username
+        password: ${{ secrets.DOCKER_PAT }}     # Use the GitHub secret for Docker Hub PAT
+
+    - name: Build and Push Docker Images
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }} # Expose username as env var for easier use
+      run: |
+        # Define image tags (latest and a unique run number tag)
+        IMAGE_TAG_LATEST="latest"
+        IMAGE_TAG_RUN="${{ github.run_number }}"
+
+        echo "Building and pushing Docker images with tags: ${IMAGE_TAG_LATEST} and ${IMAGE_TAG_RUN}"
+
+        # Build and push k8s-fleetman-api-gateway
+        echo "Building fleetman/api-gateway..."
+        docker buildx build --push \
+          -t ${DOCKER_USERNAME}/fleetman-api-gateway:${IMAGE_TAG_LATEST} \
+          -t ${DOCKER_USERNAME}/fleetman-api-gateway:${IMAGE_TAG_RUN} \
+          ./microservice-source-code/release2/k8s-fleetman-api-gateway
+
+        # Build and push k8s-fleetman-position-simulator
+        echo "Building fleetman/position-simulator..."
+        docker buildx build --push \
+          -t ${DOCKER_USERNAME}/fleetman-position-simulator:${IMAGE_TAG_LATEST} \
+          -t ${DOCKER_USERNAME}/fleetman-position-simulator:${IMAGE_TAG_RUN} \
+          ./microservice-source-code/release2/k8s-fleetman-position-simulator
+
+        # Build and push k8s-fleetman-position-tracker
+        echo "Building fleetman/position-tracker..."
+        docker buildx build --push \
+          -t ${DOCKER_USERNAME}/fleetman-position-tracker:${IMAGE_TAG_LATEST} \
+          -t ${DOCKER_USERNAME}/fleetman-position-tracker:${IMAGE_TAG_RUN} \
+          ./microservice-source-code/release2/k8s-fleetman-position-tracker
+
+        # Build and push k8s-fleetman-queue (ActiveMQ)
+        echo "Building fleetman/queue..."
+        docker buildx build --push \
+          -t ${DOCKER_USERNAME}/fleetman-queue:${IMAGE_TAG_LATEST} \
+          -t ${DOCKER_USERNAME}/fleetman-queue:${IMAGE_TAG_RUN} \
+          ./microservice-source-code/release2/k8s-fleetman-queue
+
+        # Build and push k8s-fleetman-webapp-angular
+        echo "Building fleetman/webapp-angular..."
+        docker buildx build --push \
+          -t ${DOCKER_USERNAME}/fleetman-webapp-angular:${IMAGE_TAG_LATEST} \
+          -t ${DOCKER_USERNAME}/fleetman-webapp-angular:${IMAGE_TAG_RUN} \
+          ./microservice-source-code/release2/k8s-fleetman-webapp-angular
+
+        echo "All Docker images built and pushed successfully!"
