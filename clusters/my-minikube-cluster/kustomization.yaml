@@ -2,5 +2,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+# Point to the subdirectory containing your app manifests,
+# which itself has a kustomization.yaml
 resources:
-  - ./kubernetes-manifests # Point to the subdirectory containing your app manifests
+  - kubernetes-manifests # This should be 'resources' if it contains direct YAMLs,
+                       # but if it contains a kustomization.yaml, it should be 'bases' or 'components'.
+                       # For simplicity and direct application, we'll keep it as 'resources'
+                       # but ensure the path is correct relative to this kustomization.yaml.
+
+# Let's try changing 'resources' to 'bases' for the subdirectory
+# This is the more idiomatic way when a directory itself contains a kustomization.yaml
+bases:
+  - kubernetes-manifests
