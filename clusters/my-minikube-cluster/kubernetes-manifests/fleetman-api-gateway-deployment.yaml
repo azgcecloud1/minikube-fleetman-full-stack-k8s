@@ -22,7 +22,5 @@ spec:
         ports:
         - containerPort: 8080 # Default Spring Boot port
         env:
-        - name: POSITION_TRACKER_HOSTNAME
-          value: "fleetman-position-tracker-service" # Kubernetes Service name for Position Tracker
-        - name: POSITION_TRACKER_PORT
-          value: "8080"
+        - name: POSITION_TRACKER_URL # <-- THIS IS THE NEW NAME
+          value: "http://fleetman-position-tracker-service:8080" # <-- THIS IS THE FULL URL
