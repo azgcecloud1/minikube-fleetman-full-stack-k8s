@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-service
-  namespace: minikube-tomcat # CHANGED: Dedicated namespace
+  name: mysql
+  namespace: minikube-tomcat
 spec:
   selector:
     app: mysql
   ports:
-    - protocol: TCP
-      port: 3306
-      targetPort: 3306
-  type: ClusterIP # Only accessible within the cluster by other pods
+  - name: mysql
+    port: 3306
+    targetPort: 3306
+  type: ClusterIP

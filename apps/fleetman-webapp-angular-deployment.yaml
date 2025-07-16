@@ -1,4 +1,3 @@
-# fleetman-webapp-angular-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,19 +16,26 @@ spec:
         app: fleetman-webapp-angular
     spec:
       containers:
-        - name: fleetman-webapp-angular
-          image: richardchesterwood/k8s-fleetman-webapp-angular:release2-multi
-          ports:
-            - containerPort: 80
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 10
-            periodSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 10
-            periodSeconds: 5
+      - name: fleetman-webapp-angular
+        image: richardchesterwood/k8s-fleetman-webapp-angular:release0
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: kubernetes
+        - name: API_ENDPOINT
+          value: "http://fleetman-api-gateway-service.minikube-tomcat.svc.cluster.local:8080"
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5

@@ -1,15 +1,13 @@
-# fleetman-webapp-angular-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: fleetman-webapp-angular
+  name: fleetman-webapp-angular-service
   namespace: minikube-tomcat
 spec:
   selector:
     app: fleetman-webapp-angular
   ports:
-    - name: http
-      protocol: TCP
-      port: 80
-      targetPort: 80
-  type: LoadBalancer # Use LoadBalancer for external access, or ClusterIP if using Ingress
+  - name: http
+    port: 80
+    targetPort: 80
+  type: NodePort
