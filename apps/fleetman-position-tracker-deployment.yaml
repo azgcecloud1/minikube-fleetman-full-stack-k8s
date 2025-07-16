@@ -20,29 +20,9 @@ spec:
         - name: fleetman-position-tracker
           image: richardchesterwood/k8s-fleetman-position-tracker:release2
           env:
-            - name: SPRING_PROFILES_ACTIVE
+            - name: SPRING_PROFILES_ACTIVE # Keep this for profile activation
               value: kubernetes
-            # REMOVE SPRING_RABBITMQ_HOST and SPRING_RABBITMQ_PORT
-            # Add SPRING_RABBITMQ_ADDRESSES instead
-            - name: SPRING_RABBITMQ_ADDRESSES # <--- NEW: Use this for RabbitMQ connection
-              value: "rabbitmq-service.minikube-tomcat.svc.cluster.local:5672"
-            # MySQL connection details (keep these)
-            - name: SPRING_DATASOURCE_URL
-              value: "jdbc:mysql://mysql-service.minikube-tomcat.svc.cluster.local:3306/fleetman?useSSL=false"
-            - name: SPRING_DATASOURCE_USERNAME
-              value: "root"
-            - name: SPRING_DATASOURCE_PASSWORD
-              value: "admin" # <--- CONFIRM YOUR ACTUAL MYSQL ROOT PASSWORD HERE
-            # Fleetman specific queue property via SPRING_APPLICATION_JSON (keep this)
-            - name: SPRING_APPLICATION_JSON
-              value: |
-                {
-                  "fleetman": {
-                    "position": {
-                      "queue": "position-queue"
-                    }
-                  }
-                }
+          # REMOVE all other 'env' entries for RabbitMQ, MySQL, SPRING_APPLICATION_JSON
           ports:
             - containerPort: 8080
           livenessProbe:
@@ -64,3 +44,11 @@ spec:
             requests:
               memory: "256Mi"
               cpu: "250m"
+          volumeMounts: # <--- ADD THIS BLOCK
+            - name: app-config
+              mountPath: "/config" # Mount to a directory, e.g., /config
+              readOnly: true
+      volumes: # <--- ADD THIS BLOCK (at the same level as 'containers')
+        - name: app-config
+          configMap:
+            name: fleetman-position-tracker-app-config # Reference the new ConfigMap
