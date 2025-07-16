@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-service
+  namespace: minikube-tomcat # Deploy in our dedicated namespace
+spec:
+  type: NodePort # Expose for external access (for management UI)
+  selector:
+    app: rabbitmq
+  ports:
+    - protocol: TCP
+      name: amqp
+      port: 5672 # AMQP port for applications to connect
+      targetPort: 5672
+    - protocol: TCP
+      name: management
+      port: 15672 # Management UI port
+      targetPort: 15672
+      nodePort: 30000 # Explicitly set a NodePort for easy access to UI

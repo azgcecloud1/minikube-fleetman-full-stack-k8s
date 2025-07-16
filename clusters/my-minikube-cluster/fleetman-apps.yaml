@@ -1,0 +1,13 @@
+# clusters/my-minikube-cluster/fleetman-apps.yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: fleetman-apps
+  namespace: flux-system
+spec:
+  interval: 1m0s # How often FluxCD should reconcile (1 minute)
+  path: ./apps # <--- This is the key: points directly to the new apps/ directory at repo root
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system # Reference to the GitRepository object created by bootstrap

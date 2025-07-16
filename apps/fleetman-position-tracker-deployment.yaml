@@ -1,0 +1,37 @@
+# fleetman-position-tracker-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-position-tracker-deployment
+  labels:
+    app: fleetman-position-tracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleetman-position-tracker
+  template:
+    metadata:
+      labels:
+        app: fleetman-position-tracker
+    spec:
+      containers:
+        - name: fleetman-position-tracker
+          image: richardchesterwood/k8s-fleetman-position-tracker:latest
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: kubernetes
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5

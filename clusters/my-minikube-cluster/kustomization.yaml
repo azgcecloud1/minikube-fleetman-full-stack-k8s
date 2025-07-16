@@ -1,0 +1,6 @@
+# clusters/my-minikube-cluster/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - flux-system/
+  - fleetman-apps.yaml # <--- Add this line

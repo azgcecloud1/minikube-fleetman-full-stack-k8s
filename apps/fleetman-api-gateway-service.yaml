@@ -1,0 +1,14 @@
+# fleetman-api-gateway-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-api-gateway
+spec:
+  selector:
+    app: fleetman-api-gateway
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer # Use LoadBalancer for external access, or ClusterIP if using Ingress
