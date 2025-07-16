@@ -19,35 +19,43 @@ spec:
       containers:
         - name: fleetman-position-tracker
           image: richardchesterwood/k8s-fleetman-position-tracker:release2
-          command: ["java"]
-          args:
-            - "-Dfleetman.position.queue=position-queue"
-            - "-jar"
-            - "/webapp.jar"
+          # REMOVE 'command' and 'args' sections if they are present
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: kubernetes
+            # RabbitMQ connection details
             - name: SPRING_RABBITMQ_HOST
-              value: rabbitmq-service.minikube-tomcat.svc.cluster.local # Use FQDN for clarity
+              value: rabbitmq-service.minikube-tomcat.svc.cluster.local
             - name: SPRING_RABBITMQ_PORT
               value: "5672"
-            - name: SPRING_DATASOURCE_URL # <--- ADD THESE MYSQL ENV VARS
+            # MySQL connection details
+            - name: SPRING_DATASOURCE_URL
               value: "jdbc:mysql://mysql-service.minikube-tomcat.svc.cluster.local:3306/fleetman?useSSL=false"
             - name: SPRING_DATASOURCE_USERNAME
               value: "root"
             - name: SPRING_DATASOURCE_PASSWORD
-              value: "admin" # <--- REPLACE WITH YOUR ACTUAL MYSQL ROOT PASSWORD
+              value: "admin" # <--- CONFIRM YOUR ACTUAL MYSQL ROOT PASSWORD HERE
+            # Fleetman specific queue property via SPRING_APPLICATION_JSON
+            - name: SPRING_APPLICATION_JSON
+              value: |
+                {
+                  "fleetman": {
+                    "position": {
+                      "queue": "position-queue"
+                    }
+                  }
+                }
           ports:
             - containerPort: 8080
           livenessProbe:
             httpGet:
-              path: /actuator/health
+              path: /actuator/health # Keep standard health path
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 5
           readinessProbe:
             httpGet:
-              path: /actuator/health
+              path: /actuator/health # Keep standard health path
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 5
