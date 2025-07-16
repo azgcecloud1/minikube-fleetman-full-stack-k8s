@@ -1,0 +1,8 @@
+# fleetman-api-gateway-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fleetman-api-gateway-config
+  namespace: minikube-tomcat # Must be in the same namespace as the Deployment
+data:
+  position-tracker-url: http://fleetman-position-tracker:8080

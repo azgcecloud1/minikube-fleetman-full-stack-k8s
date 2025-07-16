@@ -15,6 +15,7 @@ resources:
   - fleetman-position-simulator-deployment.yaml
   - fleetman-position-simulator-service.yaml
   - fleetman-api-gateway-deployment.yaml
+  - fleetman-api-gateway-config.yaml
   - fleetman-api-gateway-service.yaml
   - fleetman-webapp-angular-deployment.yaml
   - fleetman-webapp-angular-service.yaml

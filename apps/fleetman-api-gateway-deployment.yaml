@@ -19,11 +19,9 @@ spec:
       containers:
         - name: fleetman-api-gateway
           image: richardchesterwood/k8s-fleetman-api-gateway:release2-multi # Or release1-multi, whichever you chose
-          env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: kubernetes
-            - name: POSITION_TRACKER_URL # <--- ADD THIS ENVIRONMENT VARIABLE
-              value: http://fleetman-position-tracker:8080 # <--- ADD THIS VALUE
+          envFrom: # <--- CHANGED TO envFrom
+            - configMapRef:
+                name: fleetman-api-gateway-config # <--- Reference the new ConfigMap
           ports:
             - containerPort: 8080
           livenessProbe:
