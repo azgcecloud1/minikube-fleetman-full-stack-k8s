@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fleetman-position-tracker-deployment
+  namespace: minikube-tomcat
   labels:
     app: fleetman-position-tracker
 spec:

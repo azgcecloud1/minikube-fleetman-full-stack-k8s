@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: fleetman-webapp-angular
+  namespace: minikube-tomcat
 spec:
   selector:
     app: fleetman-webapp-angular
