@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: fleetman-position-simulator
-          image: richardchesterwood/k8s-fleetman-position-simulator:latest
+          image: richardchesterwood/k8s-fleetman-position-simulator:release2
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: kubernetes

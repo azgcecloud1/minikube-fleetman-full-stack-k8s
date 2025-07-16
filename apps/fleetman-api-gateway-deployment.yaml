@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: fleetman-api-gateway
-          image: richardchesterwood/k8s-fleetman-api-gateway:latest
+          image: richardchesterwood/k8s-fleetman-api-gateway:release1-multi (or release2-multi
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: kubernetes

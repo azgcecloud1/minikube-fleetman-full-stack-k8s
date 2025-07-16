@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: fleetman-webapp-angular
-          image: richardchesterwood/k8s-fleetman-webapp-angular:latest
+          image: richardchesterwood/k8s-fleetman-webapp-angular:release2-multi
           ports:
             - containerPort: 80
           livenessProbe:

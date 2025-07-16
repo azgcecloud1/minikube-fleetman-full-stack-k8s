@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: fleetman-position-tracker
-          image: richardchesterwood/k8s-fleetman-position-tracker:latest
+          image: richardchesterwood/k8s-fleetman-position-tracker:release2 (or release3
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: kubernetes
