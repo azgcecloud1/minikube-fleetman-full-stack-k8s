@@ -22,7 +22,7 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: kubernetes
-            - name: position-tracker-url # <--- ADD THIS ENVIRONMENT VARIABLE
+            - name: POSITION_TRACKER_URL # <--- ADD THIS ENVIRONMENT VARIABLE
               value: http://fleetman-position-tracker:8080 # <--- ADD THIS VALUE
           ports:
             - containerPort: 8080
