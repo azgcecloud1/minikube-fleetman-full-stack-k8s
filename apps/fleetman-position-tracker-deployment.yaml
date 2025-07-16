@@ -19,19 +19,24 @@ spec:
       containers:
         - name: fleetman-position-tracker
           image: richardchesterwood/k8s-fleetman-position-tracker:release2
-          command: ["java"] # <--- ADD THIS LINE to explicitly set the command
-          args: # <--- ADD THIS BLOCK to pass arguments to the command
-            - "-Dfleetman.position.queue=position-queue" # <--- Pass as Java system property
+          command: ["java"]
+          args:
+            - "-Dfleetman.position.queue=position-queue"
             - "-jar"
             - "/webapp.jar"
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: kubernetes
-            # Remove the FLEETMAN_POSITION_QUEUE env var here if it exists
             - name: SPRING_RABBITMQ_HOST
-              value: rabbitmq.minikube-tomcat.svc.cluster.local
+              value: rabbitmq-service.minikube-tomcat.svc.cluster.local # Use FQDN for clarity
             - name: SPRING_RABBITMQ_PORT
               value: "5672"
+            - name: SPRING_DATASOURCE_URL # <--- ADD THESE MYSQL ENV VARS
+              value: "jdbc:mysql://mysql-service.minikube-tomcat.svc.cluster.local:3306/fleetman?useSSL=false"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "admin" # <--- REPLACE WITH YOUR ACTUAL MYSQL ROOT PASSWORD
           ports:
             - containerPort: 8080
           livenessProbe:
@@ -46,3 +51,10 @@ spec:
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 5
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
