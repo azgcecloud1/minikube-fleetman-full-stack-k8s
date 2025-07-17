@@ -1,0 +1,47 @@
+# k8s/position-tracker/position-tracker-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-position-tracker-new-deployment
+  namespace: minikube-tomcat # Ensure this namespace exists
+  labels:
+    app: fleetman-position-tracker-new
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleetman-position-tracker-new
+  template:
+    metadata:
+      labels:
+        app: fleetman-position-tracker-new
+    spec:
+      containers:
+        - name: fleetman-position-tracker-new
+          image: position-tracker-new:latest # This will be our locally built image
+          imagePullPolicy: Never # Crucial for Minikube local images
+          ports:
+            - containerPort: 8080
+          livenessProbe: # Health check for Kubernetes
+            httpGet:
+              path: /health # Our custom health endpoint
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 3
+          readinessProbe: # Readiness check for Kubernetes
+            httpGet:
+              path: /health # Our custom health endpoint
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+          # No volume mounts for ConfigMap needed initially, as properties are baked into JAR
+          # We can add ConfigMap mounting later if we need external dynamic configuration

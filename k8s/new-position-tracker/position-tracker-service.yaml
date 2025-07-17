@@ -1,0 +1,16 @@
+# k8s/position-tracker/position-tracker-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-position-tracker-new-service # Service name for internal cluster communication
+  namespace: minikube-tomcat
+  labels:
+    app: fleetman-position-tracker-new
+spec:
+  selector:
+    app: fleetman-position-tracker-new # Selects pods with this label
+  ports:
+    - protocol: TCP
+      port: 8080 # Service port
+      targetPort: 8080 # Container port
+  type: ClusterIP # Default, internal-only service

@@ -1,0 +1,14 @@
+# kustomization.yaml (at the root of your Git repo)
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - mysql-pvc.yaml
+  - mysql-deployment.yaml
+  - mysql-service.yaml
+  - rabbitmq-deployment.yaml
+  - rabbitmq-service.yaml
+  - tomcat-deployment.yaml
+  - tomcat-service.yaml
+  - k8s/new-position-tracker/position-tracker-deployment.yaml # <--- ADD THIS LINE
+  - k8s/new-position-tracker/position-tracker-service.yaml # <--- ADD THIS LINE
