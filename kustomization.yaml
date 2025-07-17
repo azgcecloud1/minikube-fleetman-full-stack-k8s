@@ -10,4 +10,5 @@ resources:
   - rabbitmq-service.yaml
   - tomcat-deployment.yaml
   - tomcat-service.yaml
+  - tomcat-users-configmap.yaml
   # New position tracker will be added later in Step 4

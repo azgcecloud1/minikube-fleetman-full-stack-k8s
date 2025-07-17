@@ -1,0 +1,16 @@
+# tomcat-users-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tomcat-users-configmap
+  namespace: minikube-tomcat
+data:
+  tomcat-users.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <tomcat-users>
+        <role rolename="manager-gui"/>
+        <role rolename="manager-script"/>
+        <role rolename="manager-jmx"/>
+        <role rolename="manager-status"/>
+        <user username="tomcatuser" password="admin" roles="manager-gui,manager-script,manager-jmx,manager-status"/>
+    </tomcat-users>
