@@ -10,5 +10,4 @@ resources:
   - rabbitmq-service.yaml
   - tomcat-deployment.yaml
   - tomcat-service.yaml
-  - k8s/new-position-tracker/position-tracker-deployment.yaml # <--- ADD THIS LINE
-  - k8s/new-position-tracker/position-tracker-service.yaml # <--- ADD THIS LINE
+  # New position tracker will be added later in Step 4

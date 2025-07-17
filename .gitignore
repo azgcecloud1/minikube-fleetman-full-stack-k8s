@@ -14,6 +14,7 @@ nginx copy.conf
 /dashboard.yaml
 /README
 /zz_Bkup_apps - Copy/
+/notes.txt
 
 # Ignore all 'release' directories within microservice-source-code/ by default
 /microservice-source-code/release0/
