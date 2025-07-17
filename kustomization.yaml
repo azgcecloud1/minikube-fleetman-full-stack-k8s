@@ -11,4 +11,5 @@ resources:
   - tomcat-deployment.yaml
   - tomcat-service.yaml
   - tomcat-users-configmap.yaml
-  # New position tracker will be added later in Step 4
+  - k8s/new-position-tracker/position-tracker-deployment.yaml # <--- ADD THIS LINE
+  - k8s/new-position-tracker/position-tracker-service.yaml # <--- ADD THIS LINE
