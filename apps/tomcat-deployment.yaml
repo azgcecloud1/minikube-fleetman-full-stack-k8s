@@ -17,6 +17,20 @@ spec:
     spec:
       containers:
       - name: tomcat
-        image: tomcat:9
+        image: bitnami/tomcat:9.0
         ports:
         - containerPort: 8080
+        env:
+        - name: TOMCAT_PASSWORD
+          value: "admin" # Set container startup password to 'admin'
+        volumeMounts:
+        - name: tomcat-users-config
+          mountPath: /opt/bitnami/tomcat/conf/tomcat-users.xml
+          subPath: tomcat-users.xml
+      volumes:
+      - name: tomcat-users-config
+        configMap:
+          name: tomcat-users-configmap
+          items:
+            - key: tomcat-users.xml
+              path: tomcat-users.xml

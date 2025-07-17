@@ -1,3 +1,4 @@
+# fleetman-position-simulator-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,34 +17,22 @@ spec:
         app: fleetman-position-simulator
     spec:
       containers:
-      - name: fleetman-position-simulator
-        image: richardchesterwood/k8s-fleetman-position-simulator:release2
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          value: kubernetes
-        - name: FLEETMAN_POSITION_QUEUE
-          value: "position-queue"
-        - name: SPRING_RABBITMQ_HOST
-          value: "rabbitmq.minikube-tomcat.svc.cluster.local"
-        - name: SPRING_RABBITMQ_PORT
-          value: "5672"
-        - name: SPRING_RABBITMQ_USERNAME
-          value: "guest"
-        - name: SPRING_RABBITMQ_PASSWORD
-          value: "admin"
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 5
+        - name: fleetman-position-simulator
+          image: richardchesterwood/k8s-fleetman-position-simulator:release2
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: kubernetes
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5

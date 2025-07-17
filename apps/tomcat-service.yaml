@@ -1,13 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: tomcat
-  namespace: minikube-tomcat
+  name: tomcat-service
+  namespace: minikube-tomcat # CHANGED: Dedicated namespace
 spec:
+  type: NodePort # Expose the service via a NodePort
   selector:
-    app: tomcat
+    app: tomcat # Selects pods with the label app: tomcat
   ports:
-  - name: http
-    port: 8080
-    targetPort: 8080
-  type: NodePort
+    - protocol: TCP
+      port: 8080 # Service port
+      targetPort: 8080 # Container port
+      # nodePort: 30080 # REMOVED: Let Kubernetes assign the NodePort

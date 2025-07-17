@@ -1,13 +1,15 @@
+# fleetman-position-tracker-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: fleetman-position-tracker-service
+  name: fleetman-position-tracker
   namespace: minikube-tomcat
 spec:
   selector:
     app: fleetman-position-tracker
   ports:
-  - name: http
-    port: 8080
-    targetPort: 8080
-  type: NodePort
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP # Internal service, no external access needed

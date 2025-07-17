@@ -1,3 +1,4 @@
+# fleetman-api-gateway-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,42 +17,22 @@ spec:
         app: fleetman-api-gateway
     spec:
       containers:
-      - name: fleetman-api-gateway
-        image: richardchesterwood/k8s-fleetman-api-gateway:release2
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          value: kubernetes
-        - name: FLEETMAN_POSITION_QUEUE
-          value: "position-queue"
-        - name: SPRING_RABBITMQ_HOST
-          value: "rabbitmq.minikube-tomcat.svc.cluster.local"
-        - name: SPRING_RABBITMQ_PORT
-          value: "5672"
-        - name: SPRING_RABBITMQ_USERNAME
-          value: "guest"
-        - name: SPRING_RABBITMQ_PASSWORD
-          value: "guest"
-        - name: SPRING_DATASOURCE_URL
-          value: "jdbc:mysql://mysql.minikube-tomcat.svc.cluster.local:3306/fleetman?useSSL=false&allowPublicKeyRetrieval=true"
-        - name: SPRING_DATASOURCE_USERNAME
-          value: "root"
-        - name: SPRING_DATASOURCE_PASSWORD
-          value: "admin"
-        - name: POSITION_TRACKER_URL
-          value: "http://fleetman-position-tracker-service.minikube-tomcat.svc.cluster.local:8080"
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 5
+        - name: fleetman-api-gateway
+          image: richardchesterwood/k8s-fleetman-api-gateway:release2-multi # Or release1-multi, whichever you chose
+          envFrom: # <--- CHANGED TO envFrom
+            - configMapRef:
+                name: fleetman-api-gateway-config # <--- Reference the new ConfigMap
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5

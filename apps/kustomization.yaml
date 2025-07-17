@@ -12,7 +12,6 @@ resources:
   - rabbitmq-service.yaml
   - fleetman-position-tracker-deployment.yaml
   - fleetman-position-tracker-service.yaml
-  - fleetman-position-tracker-app-config.yaml
   - fleetman-position-simulator-deployment.yaml
   - fleetman-position-simulator-service.yaml
   - fleetman-api-gateway-deployment.yaml

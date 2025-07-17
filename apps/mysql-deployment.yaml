@@ -2,14 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql-deployment
-  namespace: minikube-tomcat
+  namespace: minikube-tomcat # CHANGED: Dedicated namespace
   labels:
     app: mysql
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: mysql
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -17,16 +18,22 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: mysql:8
+        image: mysql:8.0
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: "admin"
+          value: "your_root_password" # <<< CHANGE THIS PASSWORD
+        - name: MYSQL_DATABASE
+          value: "myappdb"
+        - name: MYSQL_USER
+          value: "appuser"
+        - name: MYSQL_PASSWORD
+          value: "your_app_password" # <<< CHANGE THIS PASSWORD
         ports:
         - containerPort: 3306
         volumeMounts:
-        - name: mysql-storage
+        - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
       volumes:
-      - name: mysql-storage
+      - name: mysql-persistent-storage
         persistentVolumeClaim:
-          claimName: mysql-pvc
+          claimName: mysql-pv-claim
