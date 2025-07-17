@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: fleetman-api-gateway
-          image: richardchesterwood/k8s-fleetman-api-gateway:release1 # <--- CHANGED IMAGE TAG
+          image: richardchesterwood/k8s-fleetman-api-gateway:release2-multi # <--- CHANGED IMAGE TAG
           # REMOVE envFrom SECTION IF IT'S HERE
           ports:
             - containerPort: 8080
