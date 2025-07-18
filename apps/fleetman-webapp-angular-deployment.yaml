@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fleetman-webapp-angular-deployment
-  namespace: minikube-tomcat
   labels:
     app: fleetman-webapp-angular
 spec:
@@ -18,9 +17,12 @@ spec:
     spec:
       containers:
         - name: fleetman-webapp-angular
-          image: richardchesterwood/k8s-fleetman-webapp-angular:release2-multi
+          image: richardchesterwood/k8s-fleetman-webapp-angular:latest
           ports:
             - containerPort: 80
+          env: # NEW: Added environment variables
+            - name: SPRING_PROFILES_ACTIVE # This is likely needed by the Nginx template
+              value: "kubernetes"
           livenessProbe:
             httpGet:
               path: /

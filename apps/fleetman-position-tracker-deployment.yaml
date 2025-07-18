@@ -1,4 +1,4 @@
-# fleetman-position-tracker-deployment.yaml
+# C:\Users\azhar\OneDrive\_Repo\tomcat-mysql-k8s\k8s-fleetman\apps\fleetman-position-tracker-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,11 +18,9 @@ spec:
     spec:
       containers:
         - name: fleetman-position-tracker
-          image: richardchesterwood/k8s-fleetman-position-tracker:release1
-          env:
-            - name: SPRING_PROFILES_ACTIVE # Keep this for profile activation
-              value: kubernetes
-          # REMOVE all other 'env' entries for RabbitMQ, MySQL, SPRING_APPLICATION_JSON
+              # IMPORTANT: Replace with your ACR path
+          image: azfleetmanacr.azurecr.io/position-tracker-new:latest # UPDATED LINE
+          imagePullPolicy: Always # Ensure AKS always pulls the latest image
           ports:
             - containerPort: 8080
           livenessProbe:
@@ -31,24 +29,18 @@ spec:
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 5
+            failureThreshold: 3
           readinessProbe:
             httpGet:
               path: /actuator/health
               port: 8080
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
             periodSeconds: 5
+            failureThreshold: 3
           resources:
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "150Mi" # Reduced memory limit
+              cpu: "100m"    # Reduced CPU limit
             requests:
-              memory: "256Mi"
-              cpu: "250m"
-          volumeMounts: # <--- ADD THIS BLOCK
-            - name: app-config
-              mountPath: "/config" # Mount to a directory, e.g., /config
-              readOnly: true
-      volumes: # <--- ADD THIS BLOCK (at the same level as 'containers')
-        - name: app-config
-          configMap:
-            name: fleetman-position-tracker-app-config # Reference the new ConfigMap
+              memory: "100Mi" # Reduced memory request
+              cpu: "50m"     # Reduced CPU request
