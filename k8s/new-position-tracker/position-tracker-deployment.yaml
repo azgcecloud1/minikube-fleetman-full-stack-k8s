@@ -16,6 +16,7 @@ spec:
       labels:
         app: fleetman-position-tracker-new
     spec:
+      # Removed initContainers section as logging test is complete
       containers:
         - name: fleetman-position-tracker-new
           image: position-tracker-new:latest # This will be our locally built image
@@ -24,14 +25,14 @@ spec:
             - containerPort: 8080
           livenessProbe: # Health check for Kubernetes
             httpGet:
-              path: /health # Our custom health endpoint
+              path: /actuator/health # Corrected health endpoint path
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 5
             failureThreshold: 3
           readinessProbe: # Readiness check for Kubernetes
             httpGet:
-              path: /health # Our custom health endpoint
+              path: /actuator/health # Corrected health endpoint path
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 5

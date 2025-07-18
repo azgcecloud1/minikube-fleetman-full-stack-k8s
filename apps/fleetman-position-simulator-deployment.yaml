@@ -1,0 +1,56 @@
+# apps/fleetman-position-simulator-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-position-simulator-deployment
+  namespace: minikube-tomcat
+  labels:
+    app: fleetman-position-simulator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleetman-position-simulator
+  template:
+    metadata:
+      labels:
+        app: fleetman-position-simulator
+    spec:
+      containers:
+        - name: fleetman-position-simulator
+          image: richardchesterwood/k8s-fleetman-position-simulator:release2 # Or release1, if you prefer consistency
+          env: # <--- ADD/MODIFY THIS SECTION
+            - name: SPRING_PROFILES_ACTIVE
+              value: kubernetes
+            - name: SPRING_CONFIG_LOCATION # <--- ADD THIS LINE
+              value: "file:/config/"
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+          volumeMounts: # <--- ADD THIS SECTION
+            - name: simulator-config
+              mountPath: "/config"
+              readOnly: true
+      volumes: # <--- ADD THIS SECTION
+        - name: simulator-config
+          configMap:
+            name: fleetman-position-simulator-config # Reference the new ConfigMap
+            optional: false

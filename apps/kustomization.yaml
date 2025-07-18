@@ -1,0 +1,19 @@
+    # C:\Users\azhar\OneDrive\_Repo\tomcat-mysql-k8s\k8s-fleetman\apps\kustomization.yaml
+    apiVersion: kustomize.config.k8s.io/v1beta1
+    kind: Kustomization
+    resources:
+      - mysql-pvc.yaml
+      - mysql-deployment.yaml
+      - mysql-service.yaml
+      - rabbitmq-deployment.yaml
+      - rabbitmq-service.yaml
+      - tomcat-deployment.yaml
+      - tomcat-service.yaml
+      - fleetman-api-gateway-deployment.yaml
+      - fleetman-api-gateway-service.yaml
+      - fleetman-position-simulator-deployment.yaml
+      - fleetman-position-simulator-service.yaml
+      - fleetman-position-tracker-deployment.yaml # Renamed
+      - fleetman-position-tracker-service.yaml    # Renamed
+      - fleetman-webapp-angular-deployment.yaml
+      - fleetman-webapp-angular-service.yaml

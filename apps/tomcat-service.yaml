@@ -1,0 +1,14 @@
+# tomcat-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: tomcat-service
+  namespace: minikube-tomcat
+spec:
+  type: NodePort
+  selector:
+    app: tomcat
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
