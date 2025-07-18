@@ -1,0 +1,31 @@
+# C:\Users\azhar\OneDrive\_Repo\tomcat-mysql-k8s\k8s-fleetman\clusters\my-aks-cluster\fleetman-apps.yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: fleetman-apps
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./apps # Points to the new 'apps' directory at the repository root
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  targetNamespace: minikube-tomcat # Deploy these apps into the minikube-tomcat namespace
+  healthChecks: # Optional: Add health checks for critical deployments
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: mysql-deployment
+      namespace: minikube-tomcat
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: rabbitmq-deployment
+      namespace: minikube-tomcat
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: tomcat-deployment
+      namespace: minikube-tomcat
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: fleetman-position-tracker-deployment
+      namespace: minikube-tomcat
